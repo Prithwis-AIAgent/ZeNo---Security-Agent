@@ -10,7 +10,9 @@ Exposes two MCP tools:
 from __future__ import annotations
 
 import logging
+import os
 import sys
+import time
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -149,10 +151,21 @@ async def audit_repo(req: AuditRepoRequest):
             dep_files=repo.dep_files,
             target=req.github_url,
             use_llm=req.use_llm,
+            min_severity=req.min_severity,
         )
     except Exception as exc:  # noqa: BLE001
         logger.error("Audit pipeline failed: %s", exc, exc_info=True)
         raise HTTPException(status_code=500, detail=f"Audit failed: {exc}")
+
+    # Save to audit folder
+    os.makedirs("audit", exist_ok=True)
+    safe_target = req.github_url.split("/")[-1]
+    report_filename = f"audit/report_{safe_target}_{int(time.time())}.md"
+    try:
+        with open(report_filename, "w", encoding="utf-8") as f:
+            f.write(result.report)
+    except Exception as exc:
+        logger.warning("Failed to save report to disk: %s", exc)
 
     return AuditResponse(
         report=result.report,
@@ -200,10 +213,21 @@ async def audit_code(req: AuditCodeRequest):
             dep_files=dep_files,
             target=f"inline:{req.filename}",
             use_llm=req.use_llm,
+            min_severity=req.min_severity,
         )
     except Exception as exc:  # noqa: BLE001
         logger.error("Audit pipeline failed: %s", exc, exc_info=True)
         raise HTTPException(status_code=500, detail=f"Audit failed: {exc}")
+
+    # Save to audit folder
+    os.makedirs("audit", exist_ok=True)
+    safe_target = req.filename.replace("/", "_").replace("\\", "_")
+    report_filename = f"audit/report_code_{safe_target}_{int(time.time())}.md"
+    try:
+        with open(report_filename, "w", encoding="utf-8") as f:
+            f.write(result.report)
+    except Exception as exc:
+        logger.warning("Failed to save report to disk: %s", exc)
 
     return AuditResponse(
         report=result.report,

@@ -21,6 +21,10 @@ class AuditRepoRequest(BaseModel):
         default=True,
         description="Enable LLM enrichment of scan results (requires API key in .env).",
     )
+    min_severity: str = Field(
+        default="low",
+        description="Minimum severity to include (critical, high, medium, low, unknown).",
+    )
 
     @field_validator("github_url")
     @classmethod
@@ -48,6 +52,10 @@ class AuditCodeRequest(BaseModel):
     use_llm: bool = Field(
         default=True,
         description="Enable LLM enrichment of scan results.",
+    )
+    min_severity: str = Field(
+        default="low",
+        description="Minimum severity to include (critical, high, medium, low, unknown).",
     )
 
 
@@ -103,6 +111,11 @@ TOOL_REGISTRY: list[MCPToolSchema] = [
                     "description": "Enable LLM enrichment (default: true).",
                     "default": True,
                 },
+                "min_severity": {
+                    "type": "string",
+                    "description": "Minimum severity to include (critical, high, medium, low, unknown).",
+                    "default": "low",
+                },
             },
             "required": ["github_url"],
         },
@@ -130,6 +143,11 @@ TOOL_REGISTRY: list[MCPToolSchema] = [
                     "type": "boolean",
                     "description": "Enable LLM enrichment (default: true).",
                     "default": True,
+                },
+                "min_severity": {
+                    "type": "string",
+                    "description": "Minimum severity to include (critical, high, medium, low, unknown).",
+                    "default": "low",
                 },
             },
             "required": ["code"],

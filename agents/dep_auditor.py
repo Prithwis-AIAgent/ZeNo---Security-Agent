@@ -34,6 +34,7 @@ class DepFinding:
     cve_id: str
     severity: str
     description: str
+    fixed_version: str
     affected_versions: list[str]
     references: list[str]
 
@@ -182,6 +183,7 @@ def audit_dependencies(dep_files: dict[str, str]) -> list[DepFinding]:
             cve_id=c.cve_id,
             severity=c.severity,
             description=c.description,
+            fixed_version=c.fixed_version,
             affected_versions=c.affected_versions,
             references=c.references,
         )

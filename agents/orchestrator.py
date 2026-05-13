@@ -123,6 +123,7 @@ def run_audit(
     dep_files: dict[str, str],
     target: str,
     use_llm: bool = True,
+    min_severity: str = "low",
 ) -> AuditResult:
     """
     Run the complete 3-agent security audit pipeline.
@@ -138,6 +139,8 @@ def run_audit(
     use_llm:
         If True, pass findings through CrewAI LLM agents for enrichment.
         If False (or if no API key), run pattern-only mode.
+    min_severity:
+        Minimum severity to include (critical, high, medium, low, unknown).
 
     Returns
     -------
@@ -172,6 +175,31 @@ def run_audit(
     except Exception as exc:  # noqa: BLE001
         logger.error("Dependency auditor failed: %s", exc)
         dep_findings = []
+
+    # ── Severity Filtering ───────────────────────────────────────────
+    SEVERITY_WEIGHTS = {"critical": 4, "high": 3, "medium": 2, "low": 1, "unknown": 0}
+    min_weight = SEVERITY_WEIGHTS.get(min_severity.lower(), 1)
+    
+    filtered_code = []
+    for f in code_findings:
+        w = SEVERITY_WEIGHTS.get(f.severity.lower(), 1)
+        if w >= min_weight:
+            filtered_code.append(f)
+            
+    filtered_dep = []
+    omitted_unknowns = 0
+    for f in dep_findings:
+        w = SEVERITY_WEIGHTS.get(f.severity.lower(), 0)
+        if w >= min_weight:
+            filtered_dep.append(f)
+        elif f.severity.lower() == "unknown":
+            omitted_unknowns += 1
+            
+    code_findings = filtered_code
+    dep_findings = filtered_dep
+    metadata.omitted_unknowns = omitted_unknowns
+    logger.info("After filtering (%s+): %d code findings, %d dep findings (omitted %d unknowns)", 
+                min_severity, len(code_findings), len(dep_findings), omitted_unknowns)
 
     # ── Phase 3: LLM enrichment (optional) ───────────────────────────
     llm_report: Optional[str] = None

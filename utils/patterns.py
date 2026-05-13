@@ -30,11 +30,9 @@ VULN_PATTERNS: list[VulnPattern] = [
     VulnPattern(
         name="Hardcoded API Key / Token",
         pattern=re.compile(
-            r'(?i)(api[_\-]?key|secret[_\-]?key|access[_\-]?token|auth[_\-]?token'
-            r'|bearer\s+[A-Za-z0-9\-._~+/]+=*'
-            r'|password\s*=\s*["\'][^"\']{6,}["\']'
-            r'|passwd\s*=\s*["\'][^"\']{6,}["\']'
-            r'|api_secret\s*=\s*["\'][^"\']{6,}["\'])',
+            r'(?i)((api[_\-]?key|secret[_\-]?key|access[_\-]?token|auth[_\-]?token|api[_\-]?secret|token)\s*[:=]\s*["\'][^"\']{6,}["\']'
+            r'|bearer\s+[A-Za-z0-9\-._~+/]{15,}=*'
+            r'|(password|passwd)\s*[:=]\s*["\'][^"\']{6,}["\'])',
             re.IGNORECASE,
         ),
         severity="Critical",

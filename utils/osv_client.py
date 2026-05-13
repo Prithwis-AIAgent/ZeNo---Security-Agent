@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import httpx
+import cvss
 
 logger = logging.getLogger(__name__)
 
@@ -34,35 +35,44 @@ class CVEFinding:
     cve_id: str
     severity: str           # CRITICAL, HIGH, MEDIUM, LOW, UNKNOWN
     description: str
+    fixed_version: str = ""
     affected_versions: list[str] = field(default_factory=list)
     references: list[str] = field(default_factory=list)
 
 
 def _parse_severity(vuln: dict[str, Any]) -> str:
     """Extract the highest severity from an OSV vulnerability record."""
-    # Try database_specific.severity first (common in NVD-enriched records)
+    # 1. Try database_specific.severity first
     db_sev = vuln.get("database_specific", {}).get("severity", "")
-    if db_sev:
+    if db_sev and db_sev.upper() in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):
         return db_sev.upper()
 
-    # Try CVSS from severity list
+    # 2. Parse CVSS from severity list
     for sev in vuln.get("severity", []):
-        score = sev.get("score", "")
+        score_str = sev.get("score", "")
         sev_type = sev.get("type", "")
-        if sev_type in ("CVSS_V3", "CVSS_V2") and score:
-            # Parse CVSS base score
+        if sev_type in ("CVSS_V3", "CVSS_V2") and score_str:
+            # Parse CVSS base score using the cvss library
             try:
-                base_score = float(score.split("/")[0].split(":")[-1])
-                if base_score >= 9.0:
-                    return "CRITICAL"
-                elif base_score >= 7.0:
-                    return "HIGH"
-                elif base_score >= 4.0:
-                    return "MEDIUM"
+                if sev_type == "CVSS_V3":
+                    vector = cvss.CVSS3(score_str)
+                    base_score = vector.scores()[0]
+                elif sev_type == "CVSS_V2":
+                    vector = cvss.CVSS2(score_str)
+                    base_score = vector.scores()[0]
                 else:
-                    return "LOW"
-            except (ValueError, IndexError):
-                pass
+                    continue
+            except Exception:
+                continue
+
+            if base_score >= 9.0:
+                return "CRITICAL"
+            elif base_score >= 7.0:
+                return "HIGH"
+            elif base_score >= 4.0:
+                return "MEDIUM"
+            elif base_score >= 0.1:
+                return "LOW"
 
     return "UNKNOWN"
 
@@ -78,6 +88,16 @@ def _extract_affected_versions(vuln: dict[str, Any]) -> list[str]:
     return unique[:20]  # cap at 20
 
 
+def _extract_fixed_version(vuln: dict[str, Any]) -> str:
+    """Extract the fixed version from affected[].ranges[].events."""
+    for affected in vuln.get("affected", []):
+        for r in affected.get("ranges", []):
+            for event in r.get("events", []):
+                if "fixed" in event:
+                    return str(event["fixed"])
+    return ""
+
+
 def _parse_vuln(package: str, version: str, vuln: dict[str, Any]) -> CVEFinding:
     """Convert a raw OSV vuln dict into a CVEFinding."""
     vuln_id = vuln.get("id", "UNKNOWN")
@@ -85,18 +105,28 @@ def _parse_vuln(package: str, version: str, vuln: dict[str, Any]) -> CVEFinding:
     # Prefer CVE IDs from aliases
     cve_id = next((a for a in aliases if a.startswith("CVE-")), vuln_id)
 
-    summary = vuln.get("summary", "")
+    # 3. Extract `details` field as the description
     details = vuln.get("details", "")
-    description = summary or details[:300] or "No description available."
+    summary = vuln.get("summary", "")
+    description = details or summary or "No description available."
+    if len(description) > 300:
+        description = description[:297] + "..."
+
+    # 4. Extract up to 2 URLs from references array, preferring WEB or ADVISORY
+    raw_refs = vuln.get("references", [])
+    good_refs = [r.get("url") for r in raw_refs if r.get("type") in ("WEB", "ADVISORY") and r.get("url")]
+    other_refs = [r.get("url") for r in raw_refs if r.get("type") not in ("WEB", "ADVISORY") and r.get("url")]
+    references = (good_refs + other_refs)[:2]
 
     return CVEFinding(
         package=package,
         version=version,
         cve_id=cve_id,
         severity=_parse_severity(vuln),
-        description=description,
+        description=description.strip(),
+        fixed_version=_extract_fixed_version(vuln),
         affected_versions=_extract_affected_versions(vuln),
-        references=[r.get("url", "") for r in vuln.get("references", [])[:5]],
+        references=references,
     )
 
 

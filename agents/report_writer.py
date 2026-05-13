@@ -26,7 +26,7 @@ DEP_SEVERITY_MAP = {
     "HIGH": "High",
     "MEDIUM": "Medium",
     "LOW": "Low",
-    "UNKNOWN": "Low",
+    "UNKNOWN": "Unknown",
 }
 
 
@@ -36,6 +36,7 @@ class ReportMetadata:
     target: str                          # URL or "inline code"
     scanned_files: int = 0
     scanned_packages: int = 0
+    omitted_unknowns: int = 0
     timestamp: str = field(
         default_factory=lambda: datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     )
@@ -47,10 +48,11 @@ class ReportSummary:
     high: int = 0
     medium: int = 0
     low: int = 0
+    unknown: int = 0
 
     @property
     def total(self) -> int:
-        return self.critical + self.high + self.medium + self.low
+        return self.critical + self.high + self.medium + self.low + self.unknown
 
     def to_dict(self) -> dict:
         return {
@@ -58,6 +60,7 @@ class ReportSummary:
             "high": self.high,
             "medium": self.medium,
             "low": self.low,
+            "unknown": self.unknown,
             "total": self.total,
         }
 
@@ -106,14 +109,14 @@ def generate_report(
         code_by_sev[sev].append(f)
 
     # ── Group dep findings by severity ────────────────────────────────
-    dep_by_sev: dict[str, list] = {s: [] for s in SEVERITY_ORDER}
+    dep_by_sev: dict[str, list] = {s: [] for s in SEVERITY_ORDER + ["Unknown"]}
     for f in dep_findings:
         sev = _normalise_dep_severity(f.severity)
         dep_by_sev[sev].append(f)
 
     # ── Tally summary ─────────────────────────────────────────────────
-    for sev in SEVERITY_ORDER:
-        count = len(code_by_sev[sev]) + len(dep_by_sev[sev])
+    for sev in SEVERITY_ORDER + ["Unknown"]:
+        count = len(code_by_sev.get(sev, [])) + len(dep_by_sev.get(sev, []))
         setattr(summary, sev.lower(), count)
 
     # ── Build report ─────────────────────────────────────────────────
@@ -147,6 +150,11 @@ def generate_report(
     ]
 
     if summary.total == 0:
+        if metadata.omitted_unknowns > 0:
+            lines += [
+                f"> ℹ️ **{metadata.omitted_unknowns} unscored CVEs omitted** — run with `min_severity=unknown` to see all at the bottom.",
+                ""
+            ]
         lines += [
             "> ✅ **No vulnerabilities detected** in this scan. "
             "This does not guarantee the code is free of security issues — "
@@ -199,6 +207,7 @@ def generate_report(
             lines += [f"### Dependency CVEs ({len(dep_list)})", ""]
             for f in dep_list:
                 refs = " · ".join(f.references[:3]) if f.references else "None"
+                fix_msg = f"Upgrade to version {f.fixed_version} or later." if f.fixed_version else "Upgrade to a patched version."
                 lines += [
                     f"#### {f.package} — `{f.cve_id}`",
                     "",
@@ -210,11 +219,46 @@ def generate_report(
                     "",
                     f"**Description**: {f.description}  ",
                     "",
-                    f"**How to fix it**: Upgrade `{f.package}` to a patched version.  ",
+                    f"**How to fix it**: {fix_msg}  ",
                     "",
                     f"**References**: {refs}  ",
                     "",
                 ]
+
+    # Handle Unknowns if any exist
+    unknown_list = dep_by_sev.get("Unknown", [])
+    if unknown_list:
+        lines += [
+            f"<details>",
+            f"<summary><strong>Unscored CVEs ({len(unknown_list)})</strong></summary>",
+            ""
+        ]
+        for f in unknown_list:
+            refs = " · ".join(f.references[:3]) if f.references else "None"
+            fix_msg = f"Upgrade to version {f.fixed_version} or later." if f.fixed_version else "Upgrade to a patched version."
+            lines += [
+                f"#### {f.package} — `{f.cve_id}`",
+                "",
+                f"| Field | Value |",
+                f"|---|---|",
+                f"| **Package** | `{f.package}=={f.version}` |",
+                f"| **CVE** | `{f.cve_id}` |",
+                f"| **Severity** | Unknown |",
+                "",
+                f"**Description**: {f.description}  ",
+                "",
+                f"**How to fix it**: {fix_msg}  ",
+                "",
+                f"**References**: {refs}  ",
+                "",
+            ]
+        lines += ["</details>", ""]
+
+    if metadata.omitted_unknowns > 0:
+        lines += [
+            f"> ℹ️ **{metadata.omitted_unknowns} unscored CVEs omitted** — run with `min_severity=unknown` to see all at the bottom.",
+            ""
+        ]
 
     # Footer disclaimer
     lines += [
