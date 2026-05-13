@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - SecureAgent</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="section" style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <i class="fa-solid fa-shield-cat" style="font-size: 4rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+        <h1>About SecureAgent</h1>
+        <p style="font-size: 1.2rem; color: var(--text-color); margin-bottom: 3rem;">Making application security accessible, fast, and actionable for developers everywhere.</p>
+        
+        <div class="card" style="text-align: left; margin-bottom: 2rem;">
+            <h3 style="color: var(--accent-green);"><i class="fa-solid fa-bullseye"></i> Our Vision</h3>
+            <p>Security tooling is often too noisy, too expensive, or too disconnected from the developer workflow. Our mission with SecureAgent is to bridge that gap by providing an intelligent, agent-based auditing tool that not only finds vulnerabilities but explains them clearly and offers immediate remediation paths.</p>
+            <p style="margin-top: 1rem;">We believe that by lowering the barrier to security testing—allowing seamless scans of GitHub repos and raw snippets—we can help developers catch critical flaws before they ever reach production.</p>
+        </div>
+
+        <div class="card" style="text-align: left;">
+            <h3 style="color: var(--primary-blue);"><i class="fa-solid fa-code-branch"></i> Open Source Roots</h3>
+            <p>SecureAgent is built on the shoulders of giants. We leverage the power of the OSV.dev database for dependency vulnerability mapping, FastAPI for robust server performance, and CrewAI for intelligent agent orchestration.</p>
+            <p style="margin-top: 1rem;">The core engine is entirely open source, inviting community contributions to expand our regex rulesets, add support for more package managers, and improve the LLM prompts.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <a href="index.html" class="nav-brand" style="font-size: 1.2rem;"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">AI-powered security audit tool exposed as an MCP server.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="https://github.com/your-org/secureagent">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+            <p>&copy; 2026 SecureAgent Project. Open Source under MIT License.</p>
+        </div>
+    </footer>
+</body>
+</html>

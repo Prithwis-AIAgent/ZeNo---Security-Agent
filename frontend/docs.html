@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - SecureAgent</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .doc-section {
+            margin-bottom: 3rem;
+        }
+        .code-block {
+            background-color: var(--secondary-gray);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid var(--light-border);
+            margin: 1rem 0;
+            color: var(--primary-blue);
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .table th, .table td {
+            border: 1px solid var(--light-border);
+            padding: 0.8rem;
+            text-align: left;
+        }
+        .table th {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="docs.html" class="active">Documentation</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="section grid" style="grid-template-columns: 1fr 3fr; gap: 3rem; align-items: start;">
+        
+        <!-- Sidebar -->
+        <aside style="position: sticky; top: 100px;">
+            <h3 style="margin-bottom: 1rem; border-bottom: 2px solid var(--accent-green); padding-bottom: 0.5rem;">Contents</h3>
+            <ul style="list-style: none; padding-left: 0; line-height: 2;">
+                <li><a href="#installation" style="color: var(--primary-blue); font-weight: 600;">1. Installation</a></li>
+                <li><a href="#configuration" style="color: var(--primary-blue); font-weight: 600;">2. Configuration</a></li>
+                <li><a href="#usage" style="color: var(--primary-blue); font-weight: 600;">3. Usage Guide</a></li>
+                <li><a href="#api" style="color: var(--primary-blue); font-weight: 600;">4. API Reference</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content -->
+        <main>
+            <div style="margin-bottom: 2rem;">
+                <h1>Documentation</h1>
+                <p>Everything you need to set up, configure, and run SecureAgent locally.</p>
+            </div>
+
+            <!-- Installation -->
+            <section id="installation" class="doc-section">
+                <h2>1. Installation</h2>
+                <p>SecureAgent is built with Python 3.11+. Follow these steps to get the MCP server running locally.</p>
+                <div class="code-block">
+<pre><code># 1. Clone the repository
+git clone https://github.com/your-org/secureagent.git
+cd secureagent
+
+# 2. Create and activate a virtual environment
+python -m venv .venv
+
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt</code></pre>
+                </div>
+            </section>
+
+            <!-- Configuration -->
+            <section id="configuration" class="doc-section">
+                <h2>2. Configuration</h2>
+                <p>SecureAgent uses a <code>.env</code> file for configuration. Start by copying the example file:</p>
+                <div class="code-block"><pre><code>cp .env.example .env</code></pre></div>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>OPENAI_API_KEY</code></td>
+                            <td>Yes*</td>
+                            <td>Your OpenAI API key for LLM enrichment.</td>
+                        </tr>
+                        <tr>
+                            <td><code>GEMINI_API_KEY</code></td>
+                            <td>Yes*</td>
+                            <td>Google Gemini API key (alternative to OpenAI).</td>
+                        </tr>
+                        <tr>
+                            <td><code>LLM_PROVIDER</code></td>
+                            <td>No</td>
+                            <td>Set to <code>openai</code> or <code>gemini</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>LLM_MODEL</code></td>
+                            <td>No</td>
+                            <td>Model name. We recommend <code>gpt-4.1-mini</code> for best cost/performance.</td>
+                        </tr>
+                        <tr>
+                            <td><code>GITHUB_TOKEN</code></td>
+                            <td>No</td>
+                            <td>Increases GitHub API rate limit from 60 to 5000 requests/hr.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><small>* If no API key is provided, the server falls back to Pattern-Only mode automatically.</small></p>
+            </section>
+
+            <!-- Usage -->
+            <section id="usage" class="doc-section">
+                <h2>3. Usage Guide</h2>
+                <p>Start the FastAPI server using Uvicorn:</p>
+                <div class="code-block"><pre><code>uvicorn mcp_server.main:app --reload --host 0.0.0.0 --port 8000</code></pre></div>
+                <p>Once running, the interactive Swagger UI is available at <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a>. You can execute tools directly from the browser.</p>
+            </section>
+
+            <!-- API Reference -->
+            <section id="api" class="doc-section">
+                <h2>4. API Reference</h2>
+                
+                <h3 style="margin-top: 2rem;"><code>POST /tools/audit_repo</code></h3>
+                <p>Audits a public GitHub repository. Scans source code and dependency files.</p>
+                <div class="code-block">
+<pre><code>curl -X POST "http://localhost:8000/tools/audit_repo" \
+     -H "Content-Type: application/json" \
+     -d '{"github_url": "https://github.com/owner/repo"}'</code></pre>
+                </div>
+
+                <h3 style="margin-top: 2rem;"><code>POST /tools/audit_code</code></h3>
+                <p>Audits a raw code snippet. Useful for checking code before committing.</p>
+                <div class="code-block">
+<pre><code>curl -X POST "http://localhost:8000/tools/audit_code" \
+     -H "Content-Type: application/json" \
+     -d '{
+         "code": "import pickle\ndata = pickle.loads(user_input)",
+         "filename": "app.py"
+     }'</code></pre>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Response Format</h3>
+                <p>Both endpoints return the same JSON structure containing the markdown report and severity counts.</p>
+                <div class="code-block">
+<pre><code>{
+  "report": "# SecureAgent Security Report\n\n## 🔴 Critical\n...",
+  "summary": {
+    "critical": 1,
+    "high": 0,
+    "medium": 0,
+    "low": 0,
+    "total": 1
+  },
+  "target": "inline:app.py"
+}</code></pre>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <a href="index.html" class="nav-brand" style="font-size: 1.2rem;"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">AI-powered security audit tool exposed as an MCP server.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="https://github.com/your-org/secureagent">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+            <p>&copy; 2026 SecureAgent Project. Open Source under MIT License.</p>
+        </div>
+    </footer>
+</body>
+</html>

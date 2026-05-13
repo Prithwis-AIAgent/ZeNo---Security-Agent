@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - SecureAgent</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="features.html" class="active">Features</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <header class="section" style="background-color: var(--secondary-gray); padding: 4rem 5%; text-align: center;">
+        <h1>Powerful Security Features</h1>
+        <p style="max-width: 600px; margin: 0 auto;">Deep-dive into how SecureAgent analyzes your code and dependencies.</p>
+    </header>
+
+    <!-- Code Scanning -->
+    <section class="section">
+        <div class="grid grid-2" style="align-items: center;">
+            <div>
+                <h2 style="color: var(--primary-blue);"><i class="fa-solid fa-code" style="color: var(--accent-green);"></i> Code Scanning</h2>
+                <p>SecureAgent employs a highly optimized regex scanner that acts as the first line of defense. It analyzes your Python, JavaScript, TypeScript, and .env files to detect risky patterns instantly.</p>
+                <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-key" style="color: var(--danger-red); width: 20px;"></i> <strong>Hardcoded Secrets:</strong> API keys, AWS credentials, JWTs.</li>
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-database" style="color: var(--warning-orange); width: 20px;"></i> <strong>SQL Injection:</strong> Unsafe string concatenation in queries.</li>
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-bug" style="color: var(--warning-orange); width: 20px;"></i> <strong>XSS Vulnerabilities:</strong> Dangerous DOM manipulation.</li>
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-bomb" style="color: var(--danger-red); width: 20px;"></i> <strong>Insecure Code:</strong> Use of <code>eval()</code>, unsafe deserialization (Pickle/YAML).</li>
+                </ul>
+            </div>
+            <div style="background: var(--primary-blue); color: var(--white); padding: 2rem; border-radius: 8px;">
+                <h4 style="color: var(--secondary-gray); margin-bottom: 1rem;">Scanner Example</h4>
+                <pre style="background: #1a252f; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code><span style="color: #e74c3c;">-</span> cursor.execute("SELECT * FROM users WHERE id = " + user_id)
+<span style="color: #2ecc71;">+</span> cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dependency Auditing -->
+    <section class="section bg-gray">
+        <div class="grid grid-2" style="align-items: center; direction: rtl;">
+            <div style="direction: ltr;">
+                <h2 style="color: var(--primary-blue);"><i class="fa-solid fa-box-open" style="color: var(--accent-green);"></i> Dependency Auditing</h2>
+                <p>Your code is only as secure as the libraries it relies on. SecureAgent parses your manifest files and integrates seamlessly with the OSV.dev database.</p>
+                <p style="margin-top: 1rem;"><strong>Supported Files:</strong> <code>requirements.txt</code>, <code>package.json</code>, <code>pyproject.toml</code>.</p>
+                <p>We extract package names and versions, then execute highly efficient batched queries against the OSV API to identify known CVEs, returning the exact CVSS severity and references for remediation.</p>
+            </div>
+            <div style="direction: ltr; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h4 style="color: var(--primary-blue); margin-bottom: 1rem;"><i class="fa-solid fa-server"></i> OSV.dev Integration</h4>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; color: var(--text-color);">
+                    <div style="text-align: center;"><i class="fa-solid fa-file-lines" style="font-size: 2rem; color: var(--secondary-gray);"></i><br><small>Manifest</small></div>
+                    <i class="fa-solid fa-arrow-right" style="color: var(--accent-green);"></i>
+                    <div style="text-align: center;"><i class="fa-solid fa-database" style="font-size: 2rem; color: var(--primary-blue);"></i><br><small>OSV API</small></div>
+                    <i class="fa-solid fa-arrow-right" style="color: var(--danger-red);"></i>
+                    <div style="text-align: center;"><i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--danger-red);"></i><br><small>CVE Match</small></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Report Generation -->
+    <section class="section">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2>Actionable Report Generation</h2>
+            <p>We don't just throw errors; we provide solutions.</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="card">
+                <h3><i class="fa-solid fa-layer-group" style="color: var(--primary-blue);"></i> Structured Markdown</h3>
+                <p>Reports are generated in clean Markdown format, heavily structured to prioritize fixes. Findings are organized strictly by severity: 🔴 <strong>Critical</strong> → 🟠 <strong>High</strong> → 🟡 <strong>Medium</strong> → 🔵 <strong>Low</strong>.</p>
+            </div>
+            <div class="card">
+                <h3><i class="fa-solid fa-clipboard-check" style="color: var(--primary-blue);"></i> Clear Action Items</h3>
+                <p>Every single finding in the report tells you:</p>
+                <ul style="list-style-position: inside; margin-top: 0.5rem;">
+                    <li><strong>What</strong> the vulnerability is.</li>
+                    <li><strong>Why</strong> it is dangerous in the real world.</li>
+                    <li><strong>How</strong> to fix it (with specific upgrade paths).</li>
+                    <li><strong>Where</strong> to find it (file and line reference).</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture & Design Decisions -->
+    <section class="section bg-gray">
+        <h2 style="text-align: center; margin-bottom: 3rem;">Architecture & Design Decisions</h2>
+        
+        <div class="card" style="margin-bottom: 2rem; background: var(--primary-blue); color: var(--white);">
+            <h3 style="color: var(--white); text-align: center; margin-bottom: 2rem;">The Agent Pipeline Flow</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center; font-family: 'Fira Code', monospace; text-align: center;">
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 4px; width: 100%; max-width: 600px;">
+                    POST /tools/audit_repo &rarr; GitHub Fetcher (Trees API)
+                </div>
+                <i class="fa-solid fa-arrow-down" style="color: var(--accent-green);"></i>
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 4px; width: 100%; max-width: 600px;">
+                    Phase 1: Code Scanner (Regex Rules &rarr; Validation)
+                </div>
+                <i class="fa-solid fa-arrow-down" style="color: var(--accent-green);"></i>
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 4px; width: 100%; max-width: 600px;">
+                    Phase 2: Dependency Auditor (Batch OSV Queries &rarr; Validation)
+                </div>
+                <i class="fa-solid fa-arrow-down" style="color: var(--accent-green);"></i>
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 4px; width: 100%; max-width: 600px;">
+                    Phase 3: CrewAI LLM Agents (Optional Enrichment)
+                </div>
+                <i class="fa-solid fa-arrow-down" style="color: var(--accent-green);"></i>
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 4px; width: 100%; max-width: 600px;">
+                    Phase 4: Report Writer (Final Markdown Synthesis)
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-2">
+            <div>
+                <h4><i class="fa-solid fa-bolt" style="color: var(--warning-orange);"></i> Pattern-Only Mode</h4>
+                <p>SecureAgent is designed to work even without an LLM API key. If no key is provided, the system gracefully falls back to a high-speed pattern-only mode. It uses its internal regex engine and direct OSV API queries to build a complete, template-based report.</p>
+            </div>
+            <div>
+                <h4><i class="fa-solid fa-shield-cat" style="color: var(--accent-green);"></i> Robustness & Validation</h4>
+                <p>We enforce strict data validation between every agent phase using Pydantic. Malformed findings are dropped rather than crashing the pipeline. Network requests to GitHub or OSV have timeouts, retries, and fallback mechanisms.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <a href="index.html" class="nav-brand" style="font-size: 1.2rem;"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">AI-powered security audit tool exposed as an MCP server.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="https://github.com/your-org/secureagent">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+            <p>&copy; 2026 SecureAgent Project. Open Source under MIT License.</p>
+        </div>
+    </footer>
+</body>
+</html>

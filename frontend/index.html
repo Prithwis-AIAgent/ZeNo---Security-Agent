@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureAgent - Automated Security Audits for Your Code</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Using FontAwesome for simple icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="features.html">Features</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Automated Security Audits for Your Code</h1>
+        <p>A powerful, AI-driven MCP server that scans your GitHub repositories and code snippets for vulnerabilities, providing actionable, prioritized security reports in seconds.</p>
+        <div class="hero-ctas">
+            <a href="docs.html" class="btn btn-primary">Get Started</a>
+            <a href="https://github.com/your-org/secureagent" class="btn btn-outline" target="_blank"><i class="fa-brands fa-github"></i> View on GitHub</a>
+        </div>
+    </section>
+
+    <!-- Problem/Solution Section -->
+    <section class="section">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2>The Challenge of Code Security</h2>
+            <p style="max-width: 800px; margin: 0 auto; color: var(--text-color);">Modern applications rely on complex codebases and vast dependency trees. Finding hardcoded secrets, injection flaws, and vulnerable packages manually is slow and error-prone.</p>
+        </div>
+        
+        <div class="grid grid-2">
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-bug"></i></div>
+                <h3>The Problem</h3>
+                <p>Security vulnerabilities often slip into production unnoticed. Hardcoded API keys, outdated dependencies with known CVEs, and insecure coding patterns (like SQL injection or XSS) expose your application to severe risks, while manual code reviews struggle to catch everything.</p>
+            </div>
+            <div class="card" style="border-top: 4px solid var(--accent-green);">
+                <div class="card-icon" style="color: var(--accent-green);"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <h3>The SecureAgent Solution</h3>
+                <p>SecureAgent acts as your automated security engineer. By pointing it at a repository or providing raw code, it instantly orchestrates a multi-agent pipeline to detect vulnerabilities, query OSV.dev for dependency risks, and synthesize a clear, prioritized remediation report.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Overview -->
+    <section class="section bg-gray">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <h2>Key Features</h2>
+            <p>Everything you need for rapid, reliable security assessments.</p>
+        </div>
+        <div class="grid grid-3">
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-users-gear"></i></div>
+                <h3>3-Agent Pipeline</h3>
+                <p>Powered by CrewAI, our orchestration runs a Code Scanner, Dependency Auditor, and Report Writer in sequence to ensure comprehensive coverage.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-code"></i></div>
+                <h3>Versatile Scanning</h3>
+                <p>Audit public GitHub repositories effortlessly or paste raw code snippets for immediate analysis. We analyze Python, JavaScript, TypeScript, and .env files.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon"><i class="fa-solid fa-list-check"></i></div>
+                <h3>Prioritized Reports</h3>
+                <p>Findings are categorized from Critical to Low. You get plain-English explanations of what the vulnerability is, why it's dangerous, and exactly how to fix it.</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="features.html" class="btn btn-outline">Explore All Features</a>
+        </div>
+    </section>
+
+    <!-- Trust/Credibility Section -->
+    <section class="section">
+        <div class="grid grid-2" style="align-items: center;">
+            <div>
+                <h2>Built for Reliability</h2>
+                <p style="margin-bottom: 1rem;">Security tools must be trustworthy. We've built SecureAgent with robust engineering practices to ensure it delivers accurate results without crashing.</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check" style="color: var(--accent-green); margin-right: 10px;"></i> <strong>25/25 Tests Passed:</strong> Comprehensive unit and integration test suite.</li>
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check" style="color: var(--accent-green); margin-right: 10px;"></i> <strong>Graceful Error Handling:</strong> Fails safely on private repos or network errors.</li>
+                    <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check" style="color: var(--accent-green); margin-right: 10px;"></i> <strong>Fallback Modes:</strong> Fully functional pattern-only mode if LLM is unavailable.</li>
+                    <li><i class="fa-solid fa-circle-check" style="color: var(--accent-green); margin-right: 10px;"></i> <strong>Data Validation:</strong> Strict validation between agent phases.</li>
+                </ul>
+            </div>
+            <div style="text-align: center; background: var(--secondary-gray); padding: 3rem; border-radius: 8px;">
+                <!-- Placeholder for future visuals or stats -->
+                <i class="fa-solid fa-shield-check" style="font-size: 5rem; color: var(--primary-blue); opacity: 0.2;"></i>
+                <h3 style="margin-top: 1rem;">Production Ready</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials / Logos Placeholder -->
+    <section class="section bg-gray" style="text-align: center;">
+        <h2>Trusted By Developers</h2>
+        <p style="color: var(--text-color); margin-bottom: 2rem;">Join developers who are proactively securing their codebases.</p>
+        <div style="display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; opacity: 0.5;">
+            <!-- Placeholders for company logos -->
+            <div style="font-size: 1.5rem; font-weight: bold; font-family: 'Montserrat';"><i class="fa-solid fa-building"></i> Company A</div>
+            <div style="font-size: 1.5rem; font-weight: bold; font-family: 'Montserrat';"><i class="fa-solid fa-building"></i> Startup B</div>
+            <div style="font-size: 1.5rem; font-weight: bold; font-family: 'Montserrat';"><i class="fa-solid fa-building"></i> Enterprise C</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="text-align: center; background-color: var(--primary-blue); color: var(--white);">
+        <h2 style="color: var(--white);">Ready to secure your codebase?</h2>
+        <p style="margin-bottom: 2rem; color: var(--secondary-gray);">Start auditing your repositories in minutes.</p>
+        <a href="docs.html" class="btn btn-primary">Get Started Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <a href="index.html" class="nav-brand" style="font-size: 1.2rem;"><i class="fa-solid fa-shield-halved"></i> SecureAgent</a>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">AI-powered security audit tool exposed as an MCP server.</p>
+            </div>
+            <div>
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="features.html">Features</a></li>
+                    <li><a href="docs.html">Documentation</a></li>
+                    <li><a href="https://github.com/your-org/secureagent">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SecureAgent Project. Open Source under MIT License.</p>
+        </div>
+    </footer>
+</body>
+</html>
